@@ -47,11 +47,6 @@ with st.sidebar:
             # KNN
             resultado_knn = inquilinos_compatibles_knn(id_inquilinos[0], topn)  # Utiliza solo el primer inquilino dado
 
-    #Compatibilidad
-    st.header("¿Quién está viviendo ya en el piso?")
-    st.header("¿Quieres verificar tu compatibilidad con tus compañeros/as?")
-    inquilino11 = st.text_input("Inquilino 1")
-    inquilino22 = st.text_input("Inquilino 2")
 
 # Verificar si 'resultado' contiene un mensaje de error (cadena de texto)
 if isinstance(resultado, str):
