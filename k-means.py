@@ -2,8 +2,6 @@ from sklearn.cluster import KMeans
 import pandas as pd
 import numpy as np
 
-# 1. SETUP
-# Importaciones de librerías
 
 # 2. CARGA DE DATOS
 df = pd.read_csv('data//dataset_inquilinos.csv', index_col='id_inquilino')
