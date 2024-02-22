@@ -5,6 +5,11 @@ import streamlit as st
 
 # FUNCIÓN PARA GENERAR EL GRÁFICO DE COMPATIBILIDAD
 def generar_grafico_compatibilidad(compatibilidad):
+    if compatibilidad is None:
+        # Manejar el caso en el que no hay similitud disponible
+        print("No hay similitud disponible para generar el gráfico.")
+        return None  # O cualquier otra acción que desees realizar
+
     compatibilidad = compatibilidad / 100  # Asegúrate de que esté en escala de 0 a 1 para porcentajes
     
     # Configuramos el gráfico de Seaborn
