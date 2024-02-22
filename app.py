@@ -5,8 +5,7 @@ from pca import *
 from ayudantes import *
 from kmeanspca import *
 from formulario import *
-from svm import *
-
+from formulario_page import mostrar_formularifrom svm import *
 # Configurar la página para utilizar un layout más amplio.
 st.set_page_config(layout="wide")
 
@@ -80,7 +79,7 @@ if resultado_kmeans is not None:
         fig_tabla_kmeans = generar_tabla_compatibilidad(resultado_kmeans)
         st.plotly_chart(fig_tabla_kmeans, use_container_width=True)
         
-""" # Mostrar la tabla y su título
+# Mostrar la tabla y su título
 if resultado_kmeans is not None:
     cols = st.columns((1, 2))  # Divide el layout en 2 columnas
     
@@ -90,6 +89,12 @@ if resultado_kmeans is not None:
         st.pyplot(fig_grafico_svm)
     
     with cols[1]:  # Esto hace que la tabla y su título aparezcan en la segunda columna
+        st.write("Comparativa entre compañeros (KNN):")
+        fig_tabla_knn = generar_tabla_compatibilidad(resultado_knn)
+        st.plotly_chart(fig_tabla_knn, use_container_width=True)
+        
+if st.button("Ir al Formulario"):
+    mostrar_formulario()
         st.write("Comparativa entre compañeros SVM:")
         fig_tabla_svm = generar_tabla_compatibilidad(resultado_svm)
         st.plotly_chart(fig_tabla_svm, use_container_width=True) """
