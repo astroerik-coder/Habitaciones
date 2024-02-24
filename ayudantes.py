@@ -66,7 +66,6 @@ def generar_tabla_compatibilidad(resultado):
 
     return(fig_table)
 
-
 #FUNCIÓN PARA GENERAR LA LISTA DE INQUILINOS SEMILLA
 def obtener_id_inquilinos(inquilino1, inquilino2, inquilino3, topn):
     # Crea una lista con los identificadores de inquilinos ingresados y los convierte a enteros

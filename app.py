@@ -2,8 +2,8 @@ import streamlit as st
 import pandas as pd
 from logica import *
 from ayudantes import *
-from kmeans import *
-from knn import *
+from ia import *
+from formulario_page import *
 
 # Configurar la página para utilizar un layout más amplio.
 st.set_page_config(layout="wide")
@@ -92,3 +92,5 @@ elif resultado_kmeans is not None:
         st.write("Comparativa entre compañeros (KNN):")
         fig_tabla_knn = generar_tabla_compatibilidad(resultado_knn)
         st.plotly_chart(fig_tabla_knn, use_container_width=True)
+
+mostrar_formulario1()
