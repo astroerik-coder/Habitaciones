@@ -1,37 +1,61 @@
+# 1. SETUP
 import numpy as np
 import pandas as pd
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.decomposition import PCA
+from sklearn.neighbors import NearestNeighbors
 
-# 1. SETUP
-# Cargar datos
-df = pd.read_csv('data//datos_transformados.csv', index_col='id_inquilino')
+# 2. CARGA DE DATOS
+df = pd.read_csv('data//dataset_inquilinos.csv', index_col='id_inquilino')
 
-# 2. Preprocesamiento de los datos para KNN
-# Escalar las características
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(df)
+df.columns = ['horario', 'bioritmo', 'nivel_educativo', 'leer', 'animacion', 
+              'cine', 'mascotas', 'cocinar', 'deporte', 'dieta', 'fumador',
+              'visitas', 'orden', 'musica_tipo', 'musica_alta', 'plan_perfecto', 'instrumento']
 
-# 3. Entrenamiento del modelo KNN
-knn_model = KNeighborsClassifier(n_neighbors=10)  # Definir el número de vecinos que deseas considerar
-knn_model.fit(X_scaled, df.index)  # Utilizar los índices de los inquilinos como etiquetas
+# 3. ONE HOT ENCODING
+# Realizar el one-hot encoding
+encoder = OneHotEncoder(sparse_output=False)
+df_encoded = encoder.fit_transform(df)
 
-# 4. Búsqueda de inquilinos compatibles utilizando KNN
-def inquilinos_compatibles_knn(id_inquilino, topn):
-    # Escalar las características del inquilino dado
-    id_inquilino_scaled = scaler.transform(df.loc[[id_inquilino]])
-    
-    # Utilizar el modelo KNN para encontrar los vecinos más cercanos
-    distances, indices = knn_model.kneighbors(id_inquilino_scaled, n_neighbors=topn+1)
-    
-    # Obtener los índices de los vecinos más cercanos (excluyendo el inquilino dado)
-    neighbors_indices = indices[0][1:]
-    
-    # Obtener los registros de los inquilinos similares
-    registros_similares = df.iloc[neighbors_indices]
-    
-    # Obtener la similitud de los inquilinos similares
-    similitud_series = pd.Series(data=distances[0][1:], index=neighbors_indices, name='Similitud')
-    
-    # Devolver los registros similares y la similitud
-    return registros_similares, similitud_series
+# 4. FUNCION PARA OBTENER INQUILINOS COMPATIBLES USANDO PCA Y KNN
+def inquilinos_compatibles_KNN(id_inquilinos, topn):
+    n_components=2
+    n_neighbors=5
+    # Verificar si todos los ID de inquilinos existen en el DataFrame original
+    for id_inquilino in id_inquilinos:
+        if id_inquilino not in df.index:
+            return 'Al menos uno de los inquilinos no encontrado'
+
+    # Obtener los datos de los inquilinos dados
+    datos_inquilinos = df.loc[id_inquilinos]
+
+    # Aplicar PCA
+    pca = PCA(n_components=n_components)
+    pca_resultados = pca.fit_transform(df_encoded)
+
+    # Aplicar KNN
+    knn = NearestNeighbors(n_neighbors=n_neighbors)
+    knn.fit(pca_resultados)
+
+    # Encontrar los vecinos más cercanos a los inquilinos de referencia
+    _, indices_compatibles = knn.kneighbors(pca.transform(encoder.transform(datos_inquilinos)))
+
+    # Convertir los índices de los vecinos en una lista plana
+    indices_compatibles = indices_compatibles.flatten()
+
+    # Excluir los índices de los inquilinos de referencia
+    indices_compatibles = np.setdiff1d(indices_compatibles, id_inquilinos)
+
+    # Tomar los topn inquilinos más similares
+    topn_indices = indices_compatibles[:topn]
+
+    # Obtener los registros de los inquilinos compatibles
+    registros_compatibles = df.iloc[topn_indices]
+
+    # Concatenar los registros de los inquilinos buscados con los registros de los inquilinos compatibles
+    resultado = pd.concat([datos_inquilinos.T, registros_compatibles.T], axis=1)
+
+    # Calcular la similitud entre los inquilinos compatibles y los inquilinos de referencia
+    similitud_series = pd.Series(data=indices_compatibles[:topn], index=registros_compatibles.index, name='Similitud')
+
+    return (resultado, similitud_series)
