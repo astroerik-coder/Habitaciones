@@ -4,7 +4,6 @@ from logica import *
 from pca import *
 from ayudantes import *
 from knn import *
-from formulario import *
 from formulario_page import mostrar_formulario1
 # Configurar la página para utilizar un layout más amplio.
 
@@ -13,8 +12,6 @@ archivo_csv = "data/dataset_inquilinos.csv"
 resultado = None
 resultado_pca = None 
 resultado_knn= None
-
-
 
 # Mostrar una gran imagen en la parte superior.
 st.image('Media//portada.png', use_column_width=True)

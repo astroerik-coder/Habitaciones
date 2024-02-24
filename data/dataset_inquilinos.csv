@@ -12001,3 +12001,10 @@ id_inquilino,variable1,variable2,variable3,variable4,variable5,variable6,variabl
 12000,noche,nocturno,primaria,no,si,si,con mascotas,pedir comida,no,si,si,no,relajada,rock,si,salir,si
 12001,mañana,madrugador,no,primaria,no,no,no,sin mascotas,cocinar,no,no,ordenada,pop,no,casa,si,si
 12002,mañana,madrugador,no,primaria,no,no,no,sin mascotas,cocinar,no,no,ordenada,pop,no,casa,no,no
+12001,mañana,madrugador,no,primaria,no,no,no,sin mascotas,cocinar,no,no,no,ordenada,pop,no,casa,no
+12002,tarde,nocturno,no,primaria,no,no,no,sin mascotas,cocinar,no,no,no,ordenada,pop,no,casa,no
+12003,tarde,nocturno,no,universitaria,no,no,no,sin mascotas,cocinar,no,no,no,ordenada,pop,no,casa,no
+12004,noche,madrugador,si,universitaria,no,no,no,sin mascotas,cocinar,si,si,si,ordenada,pop,si,casa,si
+12005,tarde,madrugador,no,universitaria,no,no,no,sin mascotas,cocinar,si,si,si,ordenada,pop,si,casa,no
+12006,noche,nocturno,si,universitaria,si,si,si,con mascotas,pedir comida,si,si,si,relajada,clásica,si,salir,si
+12007,noche,nocturno,si,universitaria,si,si,si,con mascotas,pedir comida,si,si,si,relajada,pop,no,casa,no

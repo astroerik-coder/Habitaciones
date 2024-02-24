@@ -4,8 +4,15 @@ import pandas as pd
 
 archivo_csv = "data/dataset_inquilinos.csv"
 
-# Inicializar el contador del id_inquilino
-ultimo_id_global = 12000
+def obtener_ultimo_id():
+    if os.path.exists(archivo_csv):
+        df = pd.read_csv(archivo_csv)
+        if not df.empty:
+            return df["id_inquilino"].max()
+    return 0
+
+# Obtener el último ID almacenado en el archivo CSV
+ultimo_id_global = obtener_ultimo_id()
 
 def guardar_en_csv(respuestas):
     global ultimo_id_global
@@ -31,43 +38,37 @@ def guardar_en_csv(respuestas):
 def mostrar_formulario1():
     st.title("Registro de datos del inquilino")
     
-    # Preguntas y respuestas
-    preguntas_respuestas = {
-        "variable1": ["mañana", "tarde", "noche"],
-        "variable2": ["madrugador", "nocturno"],
-        "variable3": ["no", "si"],
-        "variable4": ["primaria", "secundaria", "universitaria"],
-        "variable5": ["no", "si"],
-        "variable6": ["no", "si"],
-        "variable7": ["no", "si"],
-        "variable8": ["sin mascotas", "con mascotas"],
-        "variable9": ["cocinar", "pedir comida"],
-        "variable10": ["no", "si"],
-        "variable11": ["no", "si"],
-        "variable12": ["ordenada", "relajada"],
-        "variable13": ["pop", "reggaeton", "rock", "clasica"],
-        "variable14": ["no", "si"],
-        "variable15": ["casa", "salir"],
-        "variable16": ["no", "si"],
-        "variable17": ["no", "si"]
-    }
-
-    # Crear un formulario utilizando st.form
+    # Crear un formulario utilizando HTML personalizado
     with st.form(key='my_form'):
-        # Iterar sobre las preguntas y agregarlas al formulario
+        preguntas_respuestas = {
+            "¿Cuál es tu horario de trabajo típico?": ["mañana", "tarde", "noche"],
+            "¿Eres madrugador o nocturno?": ["madrugador", "nocturno"],
+            "¿Prefieres un sitio animado que uno silencioso?": ["no", "si"],
+            "¿Cuál es tu nivel educativo?": ["primaria", "secundaria", "universitaria"],
+            "¿Te gusta leer?": ["no", "si"],
+            "¿Te gusta el cine?": ["no", "si"],
+            "¿Participas en deportes o actividades recreativas?": ["no", "si"],
+            "¿Prefieres vivir con mascotas o sin ellas?": ["sin mascotas", "con mascotas"],
+            "¿Te gusta cocinar o prefieres pedir comida?": ["cocinar", "pedir comida"],
+            "¿Sigues alguna dieta?": ["no", "si"],
+            "¿Eres fumador?": ["no", "si"],
+            "¿Tienes visitas con frecuencia?": ["no", "si"],
+            "¿Eres una persona ordenada o más relajada en ese aspecto?": ["ordenada", "relajada"],
+            "¿Qué géneros de música te gustan?": ["pop", "reggaeton", "rock", "clásica"],
+            "¿Tienes la costumbre de escuchar música en alto volumen?": ["no", "si"],
+            "¿Tu plan perfecto sería tarde en casa viendo series o salir a tomar algo?": ["casa", "salir"],
+            "¿Tocas algún instrumento musical?": ["no", "si"]
+        }
+        
         respuestas_guardadas = {}
-        for pregunta, respuestas in preguntas_respuestas.items():
-            respuesta_seleccionada = st.selectbox(pregunta, respuestas)
+        for pregunta, opciones in preguntas_respuestas.items():
+            st.write(f"<label for='{pregunta}'>{pregunta}</label>", unsafe_allow_html=True)
+            respuesta_seleccionada = st.selectbox("", opciones, key=pregunta)
             respuestas_guardadas[pregunta] = respuesta_seleccionada
 
-        # Botón para enviar el formulario
         enviar_button = st.form_submit_button("Enviar Respuestas")
 
-    # Si se hace clic en el botón de enviar, realiza acciones con las respuestas
     if enviar_button:
-        # Aquí puedes realizar acciones adicionales con las respuestas
         st.success("Respuestas enviadas correctamente.")
         guardar_en_csv(respuestas_guardadas)
 
-    # Puedes devolver las respuestas si las necesitas fuera de la función
-    return respuestas_guardadas
