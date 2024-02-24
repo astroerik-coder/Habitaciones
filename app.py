@@ -11,7 +11,6 @@ archivo_csv = "data/dataset_inquilinos.csv"
 
 resultado = None
 resultado_pca = None 
-resultado_knn= None
 
 # Mostrar una gran imagen en la parte superior.
 st.image('Media//portada.png', use_column_width=True)
@@ -45,9 +44,6 @@ with st.sidebar:
             resultado = inquilinos_compatibles(id_inquilinos, topn)
             # PCA
             resultado_pca = inquilinos_compatibles_pca(id_inquilinos, topn)
-            # KNN
-            resultado_knn = inquilinos_compatibles_knn(id_inquilinos[0], topn)  # Utiliza solo el primer inquilino dado
-
 
 # Verificar si 'resultado' contiene un mensaje de error (cadena de texto)
 if isinstance(resultado, str):
@@ -83,26 +79,5 @@ elif resultado_pca is not None:  # Corrige esta línea
         fig_tabla = generar_tabla_compatibilidad(resultado_pca)
         st.plotly_chart(fig_tabla, use_container_width=True)
 
-# Verificar si 'resultado_knn' contiene un mensaje de error (cadena de texto)
-if isinstance(resultado_knn, str):
-    st.error(resultado_knn)
-# Si no, y si 'resultado_knn' no es None, mostrar el gráfico de barras y la tabla
-elif resultado_knn is not None:
-    cols = st.columns((1, 2))  # Divide el layout en 2 columnas
-    
-    with cols[0]:  # Esto hace que el gráfico y su título aparezcan en la primera columna
-        st.write("Nivel de compatibilidad de cada nuevo compañero (KNN):")
-        fig_grafico_knn = generar_grafico_compatibilidad(resultado_knn[1])
-        st.pyplot(fig_grafico_knn)
-    
-    with cols[1]:  # Esto hace que la tabla y su título aparezcan en la segunda columna
-        st.write("Comparativa entre compañeros (KNN):")
-        fig_tabla_knn = generar_tabla_compatibilidad(resultado_knn)
-        st.plotly_chart(fig_tabla_knn, use_container_width=True)
-
-#if st.button("Ir al Formulario"):
+""" if st.button("Ir al Formulario"):"""
 mostrar_formulario1()
-#guardar_mensaje()
-
-
-    

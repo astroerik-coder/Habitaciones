@@ -12,7 +12,7 @@ def obtener_ultimo_id():
     return 0
 
 # Obtener el último ID almacenado en el archivo CSV
-ultimo_id_global = obtener_ultimo_id()
+ultimo_id_global = int(obtener_ultimo_id())
 
 def guardar_en_csv(respuestas):
     global ultimo_id_global
