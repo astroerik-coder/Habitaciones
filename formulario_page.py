@@ -2,95 +2,72 @@ import streamlit as st
 import os
 import pandas as pd
 
-archivo_csv = os.path.join("data", "dataset_inquilinos.csv")
+archivo_csv = "data/dataset_inquilinos.csv"
 
-# Función para obtener un nuevo ID autogenerativo
-def obtener_nuevo_id():
-    current_id = st.session_state.get('current_id', 12000)
-    new_id = current_id + 1
-    st.session_state['current_id'] = new_id
-    return new_id
+# Inicializar el contador del id_inquilino
+ultimo_id_global = 12000
 
-def mostrar_formulario():
+def guardar_en_csv(respuestas):
+    global ultimo_id_global
+
+    # Incrementar el contador del último id_inquilino global
+    ultimo_id_global += 1
+
+    # Asegurar que la columna id_inquilino sea de tipo entero
+    respuestas["id_inquilino"] = ultimo_id_global
+
+    # Crear un DataFrame con las respuestas y un índice (id_inquilino)
+    df_respuestas = pd.DataFrame(respuestas, index=[0])
+
+    # Reorganizar las columnas para que "id_inquilino" esté en la primera posición
+    columnas_ordenadas = ["id_inquilino"] + [col for col in df_respuestas.columns if col != "id_inquilino"]
+    df_respuestas = df_respuestas[columnas_ordenadas]
+
+    # Guardar el DataFrame completo en el archivo CSV
+    df_respuestas.to_csv(archivo_csv, mode='a', header=not os.path.exists(archivo_csv), index=False)
+
+    st.success("Respuestas guardadas correctamente.")
+
+def mostrar_formulario1():
     st.title("Registro de datos del inquilino")
     
-    # Obtener un nuevo ID autogenerativo
-    nuevo_id = obtener_nuevo_id()
-
-    # Muestra el ID en el formulario (campo de texto deshabilitado)
-    st.text_input("ID:", value=nuevo_id, key="id_input", disabled=True)
-
     # Preguntas y respuestas
     preguntas_respuestas = {
-        "¿Cuál es tu horario de trabajo típico?": ["mañana", "tarde", "noche"],
-        "¿Eres madrugador o nocturno?": ["madrugador", "nocturno"],
-        "¿Prefieres un sitio animado que uno silencioso?": ["no", "si"],
-        "¿Cuál es tu nivel educativo?": ["primaria", "secundaria", "universitaria"],
-        "¿Te gusta leer?": ["no", "si"],
-        "¿Te gusta el cine?": ["no", "si"],
-        "¿Participas en deportes o actividades recreativas?": ["no", "si"],
-        "¿Prefieres vivir con mascotas o sin ellas?": ["sin mascotas", "con mascotas"],
-        "¿Te gusta cocinar o prefieres pedir comida?": ["cocinar", "pedir comida"],
-        "¿Sigues alguna dieta?": ["no", "si"],
-        "¿Eres fumador?": ["no", "si"],
-        "¿Tienes visitas con frecuencia?": ["no", "si"],
-        "¿Eres una persona ordenada o más relajada en ese aspecto?": ["ordenada", "relajada"],
-        "¿Qué géneros de música te gustan?": ["pop", "reggaeton", "rock", "clásica"],
-        "¿Tienes la costumbre de escuchar música en alto volumen?": ["no", "si"],
-        "¿Tu plan perfecto sería tarde en casa viendo series o salir a tomar algo?": ["casa", "salir"],
-        "¿Tocas algún instrumento musical?": ["no", "si"]
+        "variable1": ["mañana", "tarde", "noche"],
+        "variable2": ["madrugador", "nocturno"],
+        "variable3": ["no", "si"],
+        "variable4": ["primaria", "secundaria", "universitaria"],
+        "variable5": ["no", "si"],
+        "variable6": ["no", "si"],
+        "variable7": ["no", "si"],
+        "variable8": ["sin mascotas", "con mascotas"],
+        "variable9": ["cocinar", "pedir comida"],
+        "variable10": ["no", "si"],
+        "variable11": ["no", "si"],
+        "variable12": ["ordenada", "relajada"],
+        "variable13": ["pop", "reggaeton", "rock", "clasica"],
+        "variable14": ["no", "si"],
+        "variable15": ["casa", "salir"],
+        "variable16": ["no", "si"],
+        "variable17": ["no", "si"]
     }
 
     # Crear un formulario utilizando st.form
     with st.form(key='my_form'):
         # Iterar sobre las preguntas y agregarlas al formulario
+        respuestas_guardadas = {}
         for pregunta, respuestas in preguntas_respuestas.items():
             respuesta_seleccionada = st.selectbox(pregunta, respuestas)
+            respuestas_guardadas[pregunta] = respuesta_seleccionada
 
         # Botón para enviar el formulario
         enviar_button = st.form_submit_button("Enviar Respuestas")
 
     # Si se hace clic en el botón de enviar, realiza acciones con las respuestas
     if enviar_button:
-        # Obtener un nuevo ID autogenerativo
-        nuevo_id = obtener_nuevo_id()
-
-        # Almacena las respuestas y el nuevo ID en algún lugar (puedes adaptar esto según tus necesidades)
-        respuestas_guardadas = {
-            'ID': nuevo_id,
-            'Respuestas': {pregunta: respuesta_seleccionada for pregunta, respuesta_seleccionada in preguntas_respuestas.items()}
-        }
-
-        # Puedes imprimir o almacenar las respuestas en una base de datos, por ejemplo.
-        print(f"Respuestas Guardadas: {respuestas_guardadas}")
-
-        # Guardar los datos en el archivo CSV
+        # Aquí puedes realizar acciones adicionales con las respuestas
+        st.success("Respuestas enviadas correctamente.")
         guardar_en_csv(respuestas_guardadas)
 
-        # Agregar más lógica según sea necesario
-
-    # Botón para volver a la página principal
-    if st.button("Volver a la Página Principal"):
-        st.experimental_rerun()
-        
-# Función para guardar datos en el archivo CSV
-def guardar_en_csv(datos):
-    # Crear un DataFrame para los nuevos datos
-    df_nuevos_datos = pd.DataFrame([datos])
-
-    # Si el archivo CSV ya existe, cargarlo y agregar los nuevos datos
-    if os.path.exists(archivo_csv):
-        df_existente = pd.read_csv(archivo_csv)
-        df_concatenado = pd.concat([df_existente, df_nuevos_datos], ignore_index=True)
-    else:
-        df_concatenado = df_nuevos_datos
-
-    # Guardar el DataFrame completo en el archivo CSV
-    df_concatenado.to_csv(archivo_csv, index=False)
-
-# Configurar la página principal
-st.title("Página Principal")
-
-# Botón para ir al formulario
-if st.button("Ir al Formulario", key="formulario_button"):
-    mostrar_formulario()
+    # Puedes devolver las respuestas si las necesitas fuera de la función
+    return respuestas_guardadas
